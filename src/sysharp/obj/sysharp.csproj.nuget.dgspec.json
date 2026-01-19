@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/kasper/Documents/DotNetProjects/src/sysharp/sysharp.csproj": {}
+    "/home/kasper/Documents/DotNetProjects/sysharp/src/sysharp/sysharp.csproj": {}
   },
   "projects": {
-    "/home/kasper/Documents/DotNetProjects/src/sysharp/sysharp.csproj": {
+    "/home/kasper/Documents/DotNetProjects/sysharp/src/sysharp/sysharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/kasper/Documents/DotNetProjects/src/sysharp/sysharp.csproj",
+        "projectUniqueName": "/home/kasper/Documents/DotNetProjects/sysharp/src/sysharp/sysharp.csproj",
         "projectName": "sysharp",
-        "projectPath": "/home/kasper/Documents/DotNetProjects/src/sysharp/sysharp.csproj",
+        "projectPath": "/home/kasper/Documents/DotNetProjects/sysharp/src/sysharp/sysharp.csproj",
         "packagesPath": "/home/kasper/.nuget/packages/",
-        "outputPath": "/home/kasper/Documents/DotNetProjects/src/sysharp/obj/",
+        "outputPath": "/home/kasper/Documents/DotNetProjects/sysharp/src/sysharp/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/kasper/.nuget/NuGet/NuGet.Config"
@@ -43,6 +43,16 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "Hardware.Info": {
+              "target": "Package",
+              "version": "[101.1.0.1, )"
+            },
+            "Spectre.Console": {
+              "target": "Package",
+              "version": "[0.54.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
