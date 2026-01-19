@@ -1,17 +1,15 @@
-using Hardware.Info;
-
 public class Computer
 {
-    public Cpu Cpu { get; private set; }
-    public Drive Drive { get; private set; }
-    public Gpu Gpu { get; private set; }
-    public Memory Memory { get; private set; }
+    public Cpu Cpu { get; private set; } = null!;
+    public List<Memory> Memory { get; private set; } = null!;
 
-    public Computer(IHardwareInfo hardwareInfo)
+    // public Drive Drive { get; private set; }
+    // public Gpu Gpu { get; private set; }
+
+    private Computer() { }
+
+    public static Computer Collect()
     {
-        Cpu = new(hardwareInfo.CpuList);
-        Drive = new(hardwareInfo.DriveList);
-        Gpu = new(hardwareInfo.VideoControllerList);
-        Memory = new(hardwareInfo.MemoryStatus);
+        return new Computer { Cpu = HardwareCollector.GetCpu() };
     }
 }
