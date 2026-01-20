@@ -12,8 +12,11 @@ public class App
 
         while (_running)
         {
-            Console.WriteLine("Hello!");
             Console.WriteLine(computer.Cpu);
+
+            foreach (var ms in computer.Memory)
+                Console.WriteLine(ms);
+
             Console.ReadKey(true);
         }
     }
