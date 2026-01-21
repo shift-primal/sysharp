@@ -17,6 +17,11 @@ public class App
             foreach (var ms in computer.Memory)
                 Console.WriteLine(ms);
 
+            foreach (var d in computer.Drives)
+                Console.WriteLine(d);
+
+            Console.WriteLine(computer.Gpu);
+
             Console.ReadKey(true);
         }
     }

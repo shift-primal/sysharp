@@ -14,27 +14,27 @@ public static class HardwareCollector
         );
     }
 
-    private static string GetCpuName(string raw) =>
-        Formatting.ExtractValue(raw, @"Model name:\s*(.+)") ?? "Unknown";
+    private static string GetCpuName(string cpu) =>
+        Formatting.ExtractValue(cpu, @"Model name:\s*(.+)") ?? "Unknown";
 
-    private static int GetCpuCores(string raw) =>
-        int.TryParse(Formatting.ExtractValue(raw, @"CPU\(s\):\s*(\d+)"), out var c) ? c : 0;
+    private static int GetCpuCores(string cpu) =>
+        int.TryParse(Formatting.ExtractValue(cpu, @"CPU\(s\):\s*(\d+)"), out var c) ? c : 0;
 
-    private static int GetCpuThreads(string raw) =>
-        int.TryParse(Formatting.ExtractValue(raw, @"Core\(s\) per socket:\s*(\d+)"), out var t)
+    private static int GetCpuThreads(string cpu) =>
+        int.TryParse(Formatting.ExtractValue(cpu, @"Core\(s\) per socket:\s*(\d+)"), out var t)
             ? t
             : 0;
 
-    private static int GetCpuMaxClockRate(string raw) =>
-        int.TryParse(Formatting.ExtractValue(raw, @"CPU max MHz:\s*(\d+)"), out var cr) ? cr : 0;
+    private static int GetCpuMaxClockRate(string cpu) =>
+        int.TryParse(Formatting.ExtractValue(cpu, @"CPU max MHz:\s*(\d+)"), out var cr) ? cr : 0;
 
     // === RAM ===
 
     public static List<MemoryStick> GetMemory()
     {
-        List<MemoryStick> ramSticks = new();
-        var raw = CommandRunner.RunCommand(Commands.RamSticks);
+        List<MemoryStick> ramSticks = [];
 
+        var raw = CommandRunner.RunCommand(Commands.RamSticks);
         var sticksArr = raw.Split("Memory Device");
 
         foreach (var stick in sticksArr)
@@ -77,17 +77,40 @@ public static class HardwareCollector
 
     public static List<Drive> GetDrives()
     {
-        List<Drive> drives = new();
-        var rawDrives = CommandRunner.RunCommand(Commands.Drives);
-        var rawModels = CommandRunner.RunCommand(Commands.DriveModels);
+        List<Drive> drives = [];
 
-        var rawDrivesArr = rawDrives.Split(@"\n");
+        var raw = CommandRunner.RunCommand(Commands.Drives);
+        var drivesArr = raw.Split(["\r\n", "\r", "\n"], StringSplitOptions.None);
 
-        foreach (var drive in rawDrivesArr)
-            Console.WriteLine(drive);
+        foreach (var drive in drivesArr)
+        {
+            if (GetDriveCapacity(drive) <= 0)
+                continue;
 
-        // Console.WriteLine(rawModels);
+            drives.Add(new Drive(Name: GetDriveName(drive), Capacity: GetDriveCapacity(drive)));
+        }
 
-        return [new Drive(Manufacturer: "Hei")];
+        return drives;
     }
+
+    private static string GetDriveName(string drive) =>
+        Formatting.ExtractValue(drive, @"^\S+\s+(.+?)\s+\d+$") ?? "Unknown";
+
+    private static long GetDriveCapacity(string drive) =>
+        long.TryParse(Formatting.ExtractValue(drive, @"(\d+)$"), out var c) ? c : 0;
+
+    // === GPU ===
+
+    public static Gpu GetGpu()
+    {
+        var raw = CommandRunner.RunCommand(Commands.GpuInfo);
+
+        return new Gpu(Name: GetGpuName(raw), Manufacturer: GetGpuManufacturer(raw));
+    }
+
+    private static string GetGpuName(string gpu) =>
+        Formatting.ExtractValue(gpu, @"\[([^\]]+)\]") ?? "Unknown";
+
+    private static string GetGpuManufacturer(string gpu) =>
+        Formatting.ExtractValue(gpu, @"controller:\s*(\w+)") ?? "Unknown";
 }
