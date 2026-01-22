@@ -1,34 +1,14 @@
-using Hardware.Info;
-
 public class App
 {
-    static IHardwareInfo? hardwareInfo;
-    private bool _running;
+    private Computer? computer;
 
     public void Run()
     {
-        try
-        {
-            hardwareInfo = new HardwareInfo();
-            hardwareInfo.RefreshAll();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-        }
+        computer = Computer.Collect();
 
-        Console.WriteLine("App starting...");
+        ConsoleRenderer.Init();
 
-        if (hardwareInfo != null)
-        {
-            _running = true;
-            Computer computer = new(hardwareInfo);
-        }
-
-        while (_running)
-        {
-            Console.WriteLine("Hello!");
-            Console.ReadLine();
-        }
+        foreach (var p in computer.GetType().GetProperties())
+            ConsoleRenderer.PrintPart(p.GetValue(computer), p.Name);
     }
 }
