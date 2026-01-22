@@ -1,7 +1,7 @@
 public record MemoryStick(
     string Manufacturer,
     string RamType,
-    int Capacity,
+    Capacity Capacity,
     int Speed,
     string Slot
 );

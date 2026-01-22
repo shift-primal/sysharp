@@ -1,1 +1,1 @@
-public record Drive(string Name, long Capacity);
+public record Drive(string Name, Capacity Capacity);

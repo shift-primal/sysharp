@@ -46,7 +46,7 @@ public static class HardwareCollector
                 new MemoryStick(
                     Manufacturer: GetMemoryManufacturer(stick),
                     RamType: GetMemoryType(stick),
-                    Capacity: GetMemoryCapacity(stick),
+                    Capacity: new Capacity(GetMemoryCapacity(stick)),
                     Speed: GetMemorySpeed(stick),
                     Slot: GetMemorySlot(stick)
                 )
@@ -87,7 +87,12 @@ public static class HardwareCollector
             if (GetDriveCapacity(drive) <= 0)
                 continue;
 
-            drives.Add(new Drive(Name: GetDriveName(drive), Capacity: GetDriveCapacity(drive)));
+            drives.Add(
+                new Drive(
+                    Name: GetDriveName(drive),
+                    Capacity: new Capacity(GetDriveCapacity(drive))
+                )
+            );
         }
 
         return drives;
@@ -96,8 +101,10 @@ public static class HardwareCollector
     private static string GetDriveName(string drive) =>
         Formatting.ExtractValue(drive, @"^\S+\s+(.+?)\s+\d+$") ?? "Unknown";
 
-    private static long GetDriveCapacity(string drive) =>
-        long.TryParse(Formatting.ExtractValue(drive, @"(\d+)$"), out var c) ? c : 0;
+    private static int GetDriveCapacity(string drive) =>
+        long.TryParse(Formatting.ExtractValue(drive, @"(\d+)$"), out long c)
+            ? (int)(c / 1_000_000_000)
+            : 0;
 
     // === GPU ===
 
